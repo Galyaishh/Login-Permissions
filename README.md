@@ -25,7 +25,8 @@ All conditions must be fulfilled for the login to succeed.
 
 ## Demo
 
-[Watch the demo](https://i.imgur.com/ZlJEZdF.gif)
+[![Watch the demo](https://i.imgur.com/ZlJEZdF.gif)](https://i.imgur.com/ZlJEZdF.gif)
+
 
 ---
 
