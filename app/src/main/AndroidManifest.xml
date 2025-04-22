@@ -52,6 +52,11 @@
             </intent-filter>
         </activity>
 
+    <activity android:name=".SuccessActivity"
+        android:exported="true">
+        
+    </activity>
+
         <receiver android:name=".receivers.CallReceiver"
             android:exported="true">
             <intent-filter>

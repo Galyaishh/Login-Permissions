@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.smart_login_conditions.databinding.ItemConditionBinding;
 import com.example.smart_login_conditions.interfaces.ConditionActionListener;
 import com.example.smart_login_conditions.models.Condition;
+import com.example.smart_login_conditions.utils.PermissionUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +55,7 @@ public class ConditionAdapter extends RecyclerView.Adapter<ConditionAdapter.Cond
         holder.binding.conditionTXTName.setText(condition.getName());
         holder.binding.conditionTXTStatus.setText(condition.getStatus());
 
+
         switch (condition.getType()) {
             case ACTION_BUTTON:
                 holder.binding.conditionBTNAction.setVisibility(View.VISIBLE);
@@ -67,7 +69,6 @@ public class ConditionAdapter extends RecyclerView.Adapter<ConditionAdapter.Cond
                 if (condition.getName().equals("Call Match")) {
                     if (lastCallerName == null || lastCallerName.isEmpty()) {
                         holder.binding.conditionETInput.setHint("No recent caller");
-                        holder.binding.conditionETInput.setEnabled(false);
                         holder.binding.conditionTXTStatus.setText("❌ No recent call");
                         holder.binding.conditionTXTStatus.setTextColor(Color.parseColor("#F44336"));
                     } else {
@@ -83,7 +84,8 @@ public class ConditionAdapter extends RecyclerView.Adapter<ConditionAdapter.Cond
 
                         holder.binding.conditionETInput.addTextChangedListener(new TextWatcher() {
                             @Override
-                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                            }
 
                             @Override
                             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -92,7 +94,7 @@ public class ConditionAdapter extends RecyclerView.Adapter<ConditionAdapter.Cond
                                 boolean passed = s.toString().trim().equalsIgnoreCase(lastCallerName);
                                 condition.setPassed(passed);
                                 condition.setStatus(passed ?
-                                        "✔ Password matched (" + lastCallerName + ")" :
+                                        "✔ Password matched" :
                                         "❌ Incorrect password");
 
                                 holder.binding.conditionTXTStatus.setText(condition.getStatus());
@@ -102,7 +104,8 @@ public class ConditionAdapter extends RecyclerView.Adapter<ConditionAdapter.Cond
                             }
 
                             @Override
-                            public void afterTextChanged(Editable s) {}
+                            public void afterTextChanged(Editable s) {
+                            }
                         });
                     }
                 }
@@ -118,13 +121,11 @@ public class ConditionAdapter extends RecyclerView.Adapter<ConditionAdapter.Cond
                 condition.isPassed() ? Color.parseColor("#4CAF50") : Color.parseColor("#F44336")
         );
 
-        holder.binding.conditionBTNAction.setOnClickListener(v -> {
-            listener.onActionClicked(condition);
-        });
-    }
+        holder.binding.conditionBTNAction.setOnClickListener(v ->
+                listener.onActionClicked(condition));
 
-    public String getInputTextForCondition(String conditionName) {
-        return inputValues.getOrDefault(conditionName, null);
+        holder.binding.conditionETInput.setOnClickListener(v ->listener.onActionClicked(condition));
+
     }
 
     @Override
@@ -141,110 +142,3 @@ public class ConditionAdapter extends RecyclerView.Adapter<ConditionAdapter.Cond
         }
     }
 }
-
-
-
-//package com.example.smart_login_conditions.adapters;
-//
-//import android.graphics.Color;
-//import android.os.Build;
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
-//import android.widget.ImageButton;
-//import android.widget.TextView;
-//
-//import androidx.annotation.NonNull;
-//import androidx.appcompat.widget.AppCompatEditText;
-//import androidx.appcompat.widget.AppCompatImageButton;
-//import androidx.appcompat.widget.AppCompatTextView;
-//import androidx.recyclerview.widget.RecyclerView;
-//
-//import com.example.smart_login_conditions.MainActivity;
-//import com.example.smart_login_conditions.R;
-//import com.example.smart_login_conditions.databinding.ItemConditionBinding;
-//import com.example.smart_login_conditions.interfaces.ConditionActionListener;
-//import com.example.smart_login_conditions.models.Condition;
-//
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.Map;
-//
-//public class ConditionAdapter extends RecyclerView.Adapter<ConditionAdapter.ConditionViewHolder> {
-//
-//    private List<Condition> conditionList;
-//    private final ConditionActionListener listener;
-//
-//    private final Map<String, AppCompatEditText> inputFieldsMap = new HashMap<>();
-//
-//
-//    public ConditionAdapter(List<Condition> conditionList, ConditionActionListener listener) {
-//        this.conditionList = conditionList;
-//        this.listener = listener;
-//    }
-//
-//    @NonNull
-//    @Override
-//    public ConditionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-//        ItemConditionBinding binding = ItemConditionBinding.inflate(inflater, parent, false);
-//        return new ConditionViewHolder(binding);
-//    }
-//
-//    @Override
-//    public void onBindViewHolder(@NonNull ConditionViewHolder holder, int position) {
-//        Condition condition = conditionList.get(position);
-//        holder.binding.conditionTXTName.setText(condition.getName());
-//        holder.binding.conditionTXTStatus.setText(condition.getStatus());
-//
-//        switch (condition.getType()) {
-//            case ACTION_BUTTON:
-//                holder.binding.conditionBTNAction.setVisibility(View.VISIBLE);
-//                holder.binding.conditionETInput.setVisibility(View.GONE);
-//                break;
-//            case INPUT_FIELD:
-//                holder.binding.conditionETInput.setVisibility(View.VISIBLE);
-//                holder.binding.conditionBTNAction.setVisibility(View.GONE);
-//                inputFieldsMap.put(condition.getName(), holder.binding.conditionETInput);
-//                break;
-//            case AUTOMATIC:
-//                holder.binding.conditionETInput.setVisibility(View.GONE);
-//                holder.binding.conditionBTNAction.setVisibility(View.GONE);
-//                break;
-//        }
-//
-//        if (condition.isPassed()) {
-//            holder.binding.conditionTXTStatus.setTextColor(Color.parseColor("#4CAF50")); // ירוק
-//        } else {
-//            holder.binding.conditionTXTStatus.setTextColor(Color.parseColor("#F44336")); // אדום
-//        }
-//
-//        holder.binding.conditionBTNAction.setOnClickListener(v -> {
-//            listener.onActionClicked(condition);
-//        });
-//
-//    }
-//
-//    public String getInputTextForCondition(String conditionName) {
-//        AppCompatEditText input = inputFieldsMap.get(conditionName);
-//        if (input != null) {
-//            return input.getText().toString().trim();
-//        }
-//        return null;
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        return conditionList.size();
-//    }
-//
-//    public static class ConditionViewHolder extends RecyclerView.ViewHolder {
-//        ItemConditionBinding binding;
-//        public ConditionViewHolder(@NonNull ItemConditionBinding binding) {
-//            super(binding.getRoot());
-//            this.binding = binding;
-//
-//
-//        }
-//    }
-//}

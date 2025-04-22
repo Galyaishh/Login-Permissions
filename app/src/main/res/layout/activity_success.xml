@@ -16,7 +16,6 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="#4CAF50"
-        app:layout_constraintTop_margin="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
